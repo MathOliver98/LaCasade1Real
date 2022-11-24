@@ -1,0 +1,74 @@
+{% extends "user/account/base_account.html" %}
+{% from "_form_utils.html" import render_horizontal_date_field, render_hfield_icon_left, render_hselect %}
+
+{% block page_content %}
+  <div class="section-header">
+    <p class="is-size-4">Profile Settings</p>
+    <hr>
+  </div>
+
+  <form method="post" action="{{ url_for('account') }}">
+    {{ form.hidden_tag() }}
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Username</label>
+      </div>
+      <div class="field-body">
+        <div class="field is-narrow">
+          <div class="control is-expanded has-icons-left">
+            <input class="input"
+                   type="text"
+                   disabled
+                   value="{{ current_user.username }}">
+            <span class="icon is-small is-left">
+              <i class="fas fa-user"></i>
+            </span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control is-expanded">
+            <a href="{{ url_for('change_username') }}" class="button is-primary">
+              <span class="icon"><i class="fa fa-edit"></i></span>
+              <span>Edit Username</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="field is-horizontal">
+      <div class="field-label is-normal">
+        <label class="label">Email</label>
+      </div>
+      <div class="field-body">
+        <div class="field is-narrow">
+          <div class="control is-expanded has-icons-left">
+            <input class="input" type="text" disabled value="{{ current_user.email }}">
+            <span class="icon is-small is-left">
+              <i class="fas fa-user"></i>
+            </span>
+          </div>
+        </div>
+        <div class="field">
+          <div class="control is-expanded">
+            <a href="{{ url_for('change_email') }}" class="button is-primary">
+              <span class="icon"><i class="fa fa-edit"></i></span>
+              <span>Edit Email</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+
+    {{ render_hfield_icon_left(form.location, "fa-globe") }}
+    {{ render_hfield_icon_left(form.bio, field_type="textarea", size="is-fullwidth") }}
+ 
+    <div class="field p-2">
+      <div class="control has-text-centered">
+        <button type="submit" class="button is-primary">Update Profile</button>
+      </div>
+    </div>
+  </form>
+{% endblock page_content %}

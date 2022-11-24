@@ -1,0 +1,20 @@
+{% macro render_icon_link(icon, text, target, margin="ml-0", category="", align_text="left") %}
+  {% set anchor_classes = ["button"] %}
+
+  {# Center is the default alignment #}
+  {% if align_text == "left" %}
+    {{ anchor_classes.append("has-text-left") or "" }}
+    {# {% anchor_classes.append("has-text-left") %} #}
+  {% elif align_text == "right" %}
+    {{ anchor_classes.append("has-text-right") or "" }}
+  {% else %}
+    {{ anchor_classes.append("has-text-center") or "" }}
+  {% endif %}
+
+  {% if category %}{{ anchor_classes.append(category) or "" }}{% endif %}
+
+  <a href="{{ target }}" class="{{ anchor_classes|join(' ') }}">
+    <span class="icon is-small"><i class="fa {{ icon }}"></i></span>
+    <span class="{{ margin }}">{{ text }}</span>
+  </a>
+{% endmacro %}

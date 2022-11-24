@@ -1,0 +1,151 @@
+{% extends 'user/profile/base_profile.html' %}
+{% from "_formhelpers.html" import render_field_addons_left %}
+
+{% block page_content %}
+  <div class="box">
+    <p class="subtitle">Pending</p>
+    <hr>
+    <div class="columns is-multiline">
+      {% for product in products %}
+        <div class="column is-half">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">
+                <a href="{{ url_for('profile', id=product.seller_id) }}">
+                  <span class="tag is-default is-primary mr-2"
+                        title="{{ user.username }}'s Profile">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </a>
+                <span>{{ user.username }}</span>
+                <span class="is-pulled-right">
+                  <span class="tag is-default is-info">R${{ "%.2f"|format(product.price) }}</span>
+                  <span class="tag is-default is-warning"
+                        title="This user is selling {{ product.quantity }} units of this product">Qty: {{ product.quantity }}</span>
+                  <span class="tag is-default is-link"
+                        title="Posted {{ format_date(product.created) }}">
+                    <i class="fas fa-clock"></i>
+                  </span>
+                </span>
+              </p>
+            </header>
+
+            <div class="card-content">
+              <div class="media">
+                <div class="media-content">
+                  <p class="title is-5">{{ product.name }}</p>
+                </div>
+              </div>
+              <div class="content">
+                <div class="product-description">
+                  <p>{{ product.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <footer class="card-footer">
+
+              <!-- <a href="#" class="card-footer-item is-danger">
+                <span class="icon"><i class="fas fa-eye"></i></span>
+                <span>View</span>
+              </a> -->
+
+              {% if user == current_user %}
+                <a class="card-footer-item modal-trigger"
+                   data-target="modal-edit-product"
+                   data-id="{{ product.id }}"
+                   data-next="{{ url_for('profile_pending', id=user.id) }}">
+                  <span class="icon"><i class="fas fa-edit"></i></span>
+                  <span>Edit</span>
+                </a>
+              {% endif %}
+
+              {% if current_user.is_admin %}
+                <a href="{{ url_for('accept_product', id=product.id, next=url_for('profile_pending', id=user.id)) }}"
+                   class="card-footer-item">
+                  <span class="icon"><i class="fas fa-check"></i></span>
+                  <span>Accept</span>
+                </a>
+
+                <a href="{{ url_for('reject_product', id=product.id, next=url_for('profile_pending', id=user.id)) }}"
+                   class="card-footer-item">
+                  <span class="icon"><i class="fas fa-close"></i></span>
+                  <span>Reject</span>
+                </a>
+              {% endif %}
+
+              {% if user == current_user or current_user.is_admin %}
+                <a class="card-footer-item modal-trigger"
+                   data-target="modal-delete-product"
+                   data-id="{{ product.id }}"
+                   data-next="{{ url_for('profile_pending', id=user.id) }}">
+                  <span class="icon"><i class="fas fa-close"></i></span>
+                  <span>Delete</span>
+                </a>
+              {% endif %}
+
+            </footer>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Modals -->
+  <form id="modal-delete-product" class="modal" method="post">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Warning!</p>
+        <button type="button" class="delete" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <p>
+          Are you sure you want to delete this product? This action is <strong>permanent.</strong>
+        </p>
+      </section>
+      <footer class="modal-card-foot">
+        <button type="submit" class="button is-primary">Delete</button>
+        <button type="button" class="button close-modal">Cancel</button>
+      </footer>
+    </div>
+  </form>
+ 
+  <form id="modal-edit-product" class="modal" method="post">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Edit Product</p>
+        <button type="button" class="delete" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+ 
+        {{ edit_form.hidden_tag() }}
+ 
+        <div class="field">
+          {{ edit_form.name.label(class_="label") }}
+          <div class="control">{{ edit_form.name(class_="input") }}</div>
+        </div>
+ 
+        <div class="field">
+          {{ edit_form.description.label(class_="label") }}
+          <div class="control">{{ edit_form.description(class_="textarea") }}</div>
+        </div>
+ 
+        <div class="field">
+          {{ edit_form.quantity.label(class_="label") }}
+          <div class="control">{{ edit_form.quantity(class_="input") }}</div>
+        </div>
+ 
+        {{ render_field_addons_left(edit_form.price, addon_text="R$") }}
+ 
+ 
+ 
+      </section>
+      <footer class="modal-card-foot">
+        <button type="submit" class="button is-primary">Save</button>
+        <button type="button" class="button close-modal">Cancel</button>
+      </footer>
+    </div>
+  </form>
+{% endblock page_content %}

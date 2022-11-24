@@ -1,0 +1,80 @@
+{% extends 'user/profile/base_profile.html' %}
+{% from "_formhelpers.html" import render_field_addons_left %}
+
+{% block page_content %}
+  <div class="box">
+    <p class="subtitle">Favorites</p>
+    <hr>
+    <div class="columns is-multiline">
+      {% for product in products %}
+        <div class="column is-half">
+          <div class="card">
+            <header class="card-header">
+              <p class="card-header-title">
+                <a href="{{ url_for('profile', id=product.seller_id) }}">
+                  <span class="tag is-default is-primary mr-2"
+                        title="{{ user.username }}'s Profile">
+                    <i class="fas fa-user"></i>
+                  </span>
+                </a>
+                <span>{{ user.username }}</span>
+                <span class="is-pulled-right">
+                  <span class="tag is-default is-info">R${{ "%.2f"|format(product.price) }}</span>
+                  <span class="tag is-default is-warning"
+                        title="This user is selling {{ product.quantity }} units of this product">Qty: {{ product.quantity }}</span>
+                  <span class="tag is-default is-link"
+                        title="Posted {{ format_date(product.created) }}">
+                    <i class="fas fa-clock"></i>
+                  </span>
+                  <span class="tag is_default is-danger favorites">
+                    <i class="fas fa-heart mr-1"></i>
+                    {{ product.favorites | length }}
+                  </span>
+                </span>
+              </p>
+            </header>
+
+            <div class="card-content">
+              <div class="media">
+                <div class="media-content">
+                  <p class="title is-5">{{ product.name }}</p>
+                </div>
+              </div>
+              <div class="content">
+                <div class="product-description">
+                  <p>{{ product.description }}</p>
+                </div>
+              </div>
+            </div>
+
+            <footer class="card-footer">
+
+              {% if not current_user.is_authenticated or not current_user == product.seller %}
+                <a href="https://api.whatsapp.com/send?phone={{ product.seller.phone }}"
+                   class="card-footer-item">
+                  <span class="icon"><i class="fab fa-whatsapp"></i></span>
+                  <span>Contact</span>
+                </a>
+              {% endif %}
+
+              {% if current_user.is_authenticated and not current_user == product.seller %}
+                {% if current_user.has_liked(product.id) %}
+                  <a class="card-footer-item like" data-id="{{ product.id }}">
+                    <span class="icon icon-favorite has-text-danger"><i class="fas fa-heart"></i></span>
+                    <span class="favorite-text hey">Unfavorite</span>
+                  </a>
+                {% else %}
+                  <a class="card-footer-item like" data-id="{{ product.id }}">
+                    <span class="icon icon-favorite"><i class="fas fa-heart"></i></span>
+                    <span class="favorite-text">Favorite</span>
+                  </a>
+                {% endif %}
+              {% endif %}
+
+            </footer>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+{% endblock page_content %}

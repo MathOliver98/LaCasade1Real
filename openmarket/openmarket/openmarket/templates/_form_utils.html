@@ -1,0 +1,154 @@
+{% macro render_field(field, icon, size="is-normal") %}
+  <div class="field">
+    {{ field.label(class_="label {{ size }}") }}
+    <div class="control has-icons-left">
+      {% set input_class = "textarea" if field.type == "TextAreaField" else "input" %}
+      {{ field(class_=input_class + " " + size) }}
+      <span class="icon is-left">
+        <i class="fa {{ icon }}"></i>
+      </span>
+    </div>
+    {{ render_errors(field) }}
+  </div>
+{% endmacro %}
+
+
+{% macro render_errors(field) %}
+  {% if field.errors %}
+    {% for error in field.errors %}<p class="help is-danger">{{ error }}</p>{% endfor %}
+  {% endif %}
+{% endmacro %}
+
+
+{% macro render_password_field(field, size="is-normal") %}
+  <div class="field">
+    {{ field.label(class_="label") }}
+    <div class="control has-icons-left has-icons-right">
+      {% set category = "is-danger" if field.errors else "" %}
+      {% set classes = make_class_string("input", size, category) %}
+      {{ field(class_=classes) }}
+      <span class="icon is-left is-small">
+        <i class="fa fa-lock"></i>
+      </span>
+      <span class="icon is-right toggle-password is-clickable">
+        <i id="password-icon" class="fa fa-eye"></i>
+      </span>
+    </div>
+    {{ render_errors(field) }}
+  </div>
+{% endmacro %}
+
+{% macro render_hfield_icon_left(field, icon="", field_type="input", size="is-narrow") %}
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">{{ field.label(class_="label") }}</div>
+    <div class="field-body">
+      <div class="field {{ size }}">
+        <div class="control has-icons-left">
+          {% set type = " is-danger" if field.errors else "" %}
+          {{ field(class_=field_type + type) }}
+          {% if icon %}
+            <span class="icon is-small is-left">
+              <i class="fa {{ icon }}"></i>
+            </span>
+          {% endif %}
+        </div>
+        {{ render_errors(field) }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_hselect(field, icon) %}
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">{{ field.label(class_="label") }}</div>
+    <div class="field-body">
+      <div class="field is-narrow">
+        {% set category = " is-danger" if field.errors else "" %}
+        <div class="control has-icons-left">
+          <div class="select is-fullwidth {{ category }}">{{ field(class_="select") }}</div>
+          <span class="icon is-small is-left">
+            <i class="fa {{ icon }}"></i>
+          </span>
+          {{ render_errors(field) }}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_horizontal_date_field(field, value="") %}
+  <div class="field is-horizontal">
+    <div class="field-label is-normal">{{ field.label(class_="label") }}</div>
+    <div class="field-body">
+      <div class="field is-narrow">
+        <div class="control has-icons-left">
+          {% set cls = "input is-danger" if field.errors else "input" %}
+          {{ field(class_=cls, value=value) }}
+          <span class="icon is-small is-left">
+            <i class="fa fa-calendar"></i>
+          </span>
+        </div>
+        {{ render_errors(field) }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro render_horizontal_password_field(field, size="is-expanded") %}
+  <div class="field is-horizontal p-2">
+    <div class="field-label is-normal">{{ field.label(class_="label") }}</div>
+    <div class="field-body">
+      <div class="field {{ size }}">
+        <div class="control has-icons-left has-icons-right">
+          {% set cls = "input is-danger" if field.errors else "input" %}
+          {{ field(class_=cls) }}
+          <span class="icon is-small is-left">
+            <i class="fas fa-lock"></i>
+          </span>
+          <span class="icon is-right toggle-password">
+            <i id="password-icon" class="fa fa-eye"></i>
+          </span>
+        </div>
+        {{ render_errors(field) }}
+      </div>
+    </div>
+  </div>
+{% endmacro %}
+
+{% macro form_field(field) -%}
+  {% set with_label = kwargs.pop('with_label', False) %}
+  {% set placeholder = '' %}
+  {% if not with_label %}
+    {% set placeholder = field.label.text %}
+  {% endif %}
+  <div class="control-group {% if field.errors %}error{% endif %}">
+    {% if with_label %}
+      <label for="{{ field.id }}" class="control-label">
+        {{ field.label.text }}
+        {% if field.flags.required %}*{% endif %}
+        :
+      </label>
+    {% endif %}
+    <div class="controls">
+      {% set class_ = kwargs.pop('class_', '') %}
+      {% if field.flags.required %}
+        {% set class_ = class_ + ' required' %}
+      {% endif %}
+      {% if field.type == 'BooleanField' %}
+        <label class="checkbox">
+          {{ field(class_=class_, **kwargs) }}
+          {{ field.label.text|safe }}
+        </label>
+      {% else %}
+        {% if field.type in ('TextField', 'TextAreaField', 'PasswordField') %}
+          {% set class_ = class_ + ' input-xlarge' %}
+        {% elif field.type == 'FileField' %}
+          {% set class_ = class_ + ' input-file' %}
+        {% endif %}
+        {{ field(class_=class_, placeholder=placeholder, **kwargs) }}
+      {% endif %}
+      {% if field.errors %}<span class="error help-inline">{{ field.errors|join(', ') }}</span>{% endif %}
+      {% if field.description %}<p class="help-block">{{ field.description|safe }}</p>{% endif %}
+    </div>
+  </div>
+{%- endmacro %}

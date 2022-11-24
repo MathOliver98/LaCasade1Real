@@ -1,0 +1,26 @@
+{% extends "user/account/base_account.html" %}
+{% from "_form_utils.html" import render_hfield_icon_left, render_horizontal_password_field %}
+
+{% block page_content %}
+
+  <div class="section-header">
+    <p class="is-size-4">Change Username</p>
+    <hr>
+  </div>
+
+  <form action="{{ url_for('change_username') }}" method="post">
+    {{ form.hidden_tag() }}
+    {{ render_hfield_icon_left(form.new_username, "fa-user") }}
+    <hr>
+ 
+    {{ render_horizontal_password_field(form.password, size="is-narrow") }}
+    <hr>
+ 
+    <div class="field p-2">
+      <div class="control has-text-centered">
+        <button type="submit" class="button is-primary">Save</button>
+      </div>
+    </div>
+  </form>
+
+{% endblock page_content %}

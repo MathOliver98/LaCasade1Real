@@ -1,0 +1,108 @@
+{% macro render_field(field, icon="", input_extras="", control_extras="", field_extras="", field_type="input", value="") %}
+    <div class="field {{ field_extras }}">
+        {{ field.label(class_="label") }}
+        <div class="control has-icons-left {{ control_extras }}">
+            {{ field(class_=field_type + " " + input_extras, value=value) }}
+            {% if icon %}
+                <span class="icon is-small is-left">
+                    <i class="fa {{ icon }}"></i>
+                </span>
+            {% endif %}
+        </div>
+        {{ render_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro render_form_field(field, field_extras="", control_type="input", control_extras="") %}
+    <div class="field {{ field_extras }}">
+        {{ field.label(class_="label") }}
+        <div class="control">
+            {% set control_classes = [control_type] %}
+            {% for cls in field_extras %}{% endfor %}
+            {{ field(class_=field_type) }}
+        </div>
+    </div>
+{% endmacro %}
+
+{% macro render_form_control(field, extra_classes="") %}
+    <div class="control"></div>
+{% endmacro %}
+
+{% macro render_checkbox_field(field, label_class="checkbox", field_extras="") %}
+    <div class="field {{ field_extras }}">
+        <div class="control">{{ field.label(field=field, class_=label_class) }}</div>
+
+        {{ render_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro render_password_field(field, size="is-medium") %}
+    <div class="field">
+        {{ field.label(class_="label") }}
+        <div class="control has-icons-left has-icons-right">
+            {{ field(class_="input " + size) }}
+            <span class="icon is-left is-small">
+                <i class="fa fa-lock"></i>
+            </span>
+            <span class="icon is-right toggle-password">
+                <i id="password-icon" class="fa fa-eye"></i>
+            </span>
+        </div>
+    </div>
+{% endmacro %}
+
+
+
+{% macro render_phone_field(field, icon="fa-phone", size="is-medium", value="") %}
+    <div class="field">
+        {{ field.label(class_="label") }}
+        <div class="control">
+            <div class="field has-addons">
+                <div class="control">
+                    <a class="button is-static {{ size }}">+55</a>
+                </div>
+                <div class="control has-icons-left is-expanded">
+                    {{ field(class_="input " + size, value=value) }}
+                    <span class="icon is-left">
+                        <i class="fa {{ icon }}"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <p class="help">Type only numbers</p>
+        {{ render_errors(field) }}
+    </div>
+{% endmacro %}
+
+{% macro render_field_addons_left(field, icon="", addon_text="", help="", size="is-normal") %}
+    <div class="field">
+        {{ field.label(class_="label") }}
+        <div class="control">
+            <div class="field has-addons">
+                <div class="control">
+                    <a class="button is-static {{ size }}">{{ addon_text }}</a>
+                </div>
+
+                {% set has_icons = "has-icons" if icon else "" %}
+                <div class="control is-expanded {{ has_icons }}">
+                    {{ field(class_="input " + size) }}
+                    {% if icon %}
+                        <span class="icon is-left">
+                            <i class="fa {{ icon }}"></i>
+                        </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if help %}<p class="help">{{ help }}</p>{% endif %}
+        {{ render_errors(field) }}
+    </div>
+
+{% endmacro %}
+
+
+{% macro render_errors(field) %}
+    {% if field.errors %}
+        {% for error in field.errors %}<p class="help is-danger">{{ error }}</p>{% endfor %}
+    {% endif %}
+{% endmacro %}

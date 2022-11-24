@@ -1,0 +1,28 @@
+{% extends 'user/profile/base_profile.html' %}
+
+{% block page_content %}
+  <div class="box">
+    <p class="subtitle">Personal Information</p>
+    <hr>
+    <table class="table is-striped is-hoverable" id="profile-info">
+      <tbody>
+        <tr>
+          <th>Username:</th>
+          <td>{{ user.username }}</td>
+        </tr>
+        <tr>
+          <th>Cellphone:</th>
+          <td>{{ user.phone }}</td>
+        </tr>
+        <tr>
+          <th>Location:</th>
+          <td>{{ user.location or "N/A" }}</td>
+        </tr>
+        <tr>
+          <th>Biography:</th>
+          <td>{{ user.bio or "N/A" }}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+{% endblock page_content %}

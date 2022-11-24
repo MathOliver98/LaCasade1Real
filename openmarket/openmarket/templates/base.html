@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"/>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/bulma-list.css') }}"/>
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='css/style.css') }}"/>
+
+    {% if title %}
+      <title>Open Market - {{ title }}</title>
+    {% else %}
+      <title>Open Market</title>
+    {% endif %}
+  </head>
+
+  {% block style %}
+  {% endblock style %}
+ 
+  <body >
+    <header>
+      <nav class="navbar is-black"
+           role="navigation"
+           aria-label="main navigation">
+        <div class="container">
+
+          <div class="navbar-brand">
+            <a href="{{ url_for('index') }}" class="navbar-item is-size-5">OpenMarket</a>
+
+            <a role="button"
+               class="navbar-burger"
+               aria-label="menu"
+               aria-expanded="false"
+               data-target="nav-menu">
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+              <span aria-hidden="true"></span>
+            </a>
+          </div>
+
+          <div class="navbar-menu" id="nav-menu">
+            <div class="navbar-start">
+              <a href="{{ url_for('products') }}" class="navbar-item">Products</a>
+              {% if current_user.is_admin %}<a href="{{ url_for('admin_pending') }}" class="navbar-item">Pending</a>{% endif %}
+            </div>
+
+            <div class="navbar-end">
+              {% if current_user.is_admin %}
+                <form id="nav-search" method="get">
+                  <p class="control has-icons-left has-icons-right">
+                    <input type="text"
+                           class="input"
+                           name="username"
+                           placeholder="Search for users.."
+                           required>
+                    <span class="icon is-left">
+                      <i class="fas fa-user"></i>
+                    </span>
+                    <span class="icon is-right" id="icon-search">
+                      <i class="fas fa-magnifying-glass"></i>
+                    </span>
+                    <input type="submit" style="display: none;">
+                  </p>
+                </form>
+              {% endif %}
+              <div class="navbar-item">
+                <div class="buttons">
+                  {% if current_user.is_authenticated %}
+                    <div class="navbar-item has-dropdown is-hoverable">
+                      <a class="navbar-link">{{ current_user.username }}</a>
+                      <div class="navbar-dropdown">
+                        <a href="{{ url_for('profile', id=current_user.id) }}"
+                           class="navbar-item">
+                          <span class="icon is-small">
+                            <i class="fa fa-user"></i>
+                          </span>
+                          <span class="ml-2">My Profile</span>
+                        </a>
+                        <hr class="navbar-divider">
+                        <a href="{{ url_for('add_product') }}" class="navbar-item">
+                          <span class="icon is-small"><i class="fa fa-circle-plus"></i></span>
+                          <span class="ml-2">Add Product</span>
+                        </a>
+                        <a class="navbar-item"
+                           href="{{ url_for('products', username=current_user.username) }}">
+                          <span class="icon is-small"><i class="fa fa-eye"></i></span>
+                          <span class="ml-2">My Products</span>
+                        </a>
+                        <a class="navbar-item"
+                           href="{{ url_for('user_favorites', id=current_user.id) }}">
+                          <span class="icon is-small"><i class="fa fa-heart"></i></span>
+                          <span class="ml-2">My Favorites</span>
+                        </a>
+                        <hr class="navbar-divider" />
+                        <a href="{{ url_for('account') }}" class="navbar-item">
+                          <span class="icon is-small">
+                            <i class="fa fa-gear"></i>
+                          </span>
+                          <span class="ml-2">Settings</span>
+                        </a>
+                        <a href="{{ url_for('logout') }}" class="navbar-item">
+                          <span class="icon is-small">
+                            <i class="fa fa-right-from-bracket"></i>
+                          </span>
+                          <span class="ml-2">Log out</span>
+                        </a>
+                      </div>
+                    </div>
+                    <!-- <hr class="navbar-divider" /> -->
+                    <!-- <a href="{{ url_for('logout') }}" class="button is-primary"><strong>Log out</strong></a> -->
+                  {% else %}
+                    <a href="{{ url_for('login') }}" class="button is-primary">Login</a>
+                    <a href="{{ url_for('register') }}" class="button is-light">Sign Up</a>
+                  {% endif %}
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <div class="container">
+      {% with messages = get_flashed_messages(with_categories=True) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="notification box mt-1 is-light is-{{ category }}">
+              <button class="delete"></button>
+              {{ message }}
+            </div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+    </div>
+
+    <main>
+      {% block content %}
+      {% endblock content %}
+    </main>
+ 
+    <footer class="footer mt-6">
+      <div class="content has-text-centered">
+        <p>
+          <strong>Open Market</strong> Copyright &copy; 2022
+        </p>
+      </div>
+    </footer>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/modal.js') }}"></script>
+ 
+    <script>
+      const form = document.getElementById("nav-search");
+      form.addEventListener("submit", (event) => {
+          event.preventDefault();
+          var username = form.elements["username"].value;
+          form.action = `/user/${username}`
+          form.submit();
+      });
+    </script>
+    {% block script %}
+    {% endblock script %}
+  </body>
+
+</html>

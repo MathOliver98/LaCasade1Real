@@ -1,0 +1,4 @@
+[tool.flakeheaven]
+format = "grouped"
+max_line_length = 100
+show_source = true

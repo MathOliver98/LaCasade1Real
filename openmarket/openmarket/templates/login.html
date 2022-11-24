@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_checkbox_field %}
+{% from "_form_utils.html" import render_field, render_password_field %}
+
+{% block content %}
+  <section class="hero is-fullheight-with-navbar">
+    <div class="hero-body is-flex-grow-0 p-3">
+      <div class="container is-flex is-justify-content-center">
+        <div class="column is-5-desktop is-7-tablet is-11-mobile">
+
+          <p class="title has-text-centered">Login</p>
+          <hr />
+
+          <form action="{{ url_for('login') }}" method="post" class="box">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.email, "fa-envelope", size="is-medium") }}
+            {{ render_password_field(form.password, size="is-medium") }}
+            {{ render_checkbox_field(form.remember_me, field_extras="has-text-centered p-3") }}
+
+            <div class="field">
+              <div class="control">
+                <button class="button is-block is-info is-medium is-fullwidth">
+                  Login <i class="fa fa-sign-in p-1" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+            <p class=" has-text-centered has-text-weight-semibold">
+              Don't have an account?
+              <a href="{{ url_for('register') }}">Sign Up</a> instead.
+              <!-- <a>Forgot Password</a> &nbsp;·&nbsp;
+              <a>Need Help?</a> -->
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

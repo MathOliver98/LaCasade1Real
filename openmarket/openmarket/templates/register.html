@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field, render_errors, render_phone_field, render_password_field %}
+
+{% block content %}
+  <section class="hero is-fullheight-with-navbar">
+    <div class="hero-body is-flex-grow-0 p-3">
+      <div class="container is-flex is-justify-content-center">
+        <div class="column is-5-desktop is-7-tablet is-11-mobile">
+          <p class="title has-text-centered">Register</p>
+          <hr/>
+
+          <form action="{{ url_for('register') }}" method="post" class="box">
+            {{ form.hidden_tag() }}
+            {{ render_field(form.display_name, "fa-user", input_extras="is-medium") }}
+            {{ render_field(form.username, "fa-user", input_extras="is-medium") }}
+            {{ render_field(form.email, "fa-envelope", input_extras="is-medium") }}
+            {{ render_phone_field(form.phone) }}
+            {{ render_password_field(form.password) }}
+            {{ render_password_field(form.confirm_password) }}
+
+            <div class="field">
+              <div class="control has-text-centered has-text-weight-semibold p-2">
+                <p>
+                  Already have an account? <a href="{{ url_for('login') }}">Log in</a> instead.
+                </p>
+              </div>
+            </div>
+
+            <div class="field">
+              <div class="control">
+                <button class="button is-info is-block is-fullwidth is-medium">
+                  Create Account <i class="fa fa-user-plus p-1" aria-hidden="true"></i>
+                </button>
+              </div>
+            </div>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </section>
+{% endblock content %}

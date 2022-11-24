@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% from "_formhelpers.html" import render_field, render_field_addons_left %}
+
+{% block content %}
+  <section class="section">
+    <div class="container is-max-desktop">
+
+      <form action="{{ url_for('add_product') }}" method="post" class="box">
+        {{ form.hidden_tag() }}
+ 
+        <div class="field">
+          {{ form.name.label(class_="label") }}
+          <div class="control">{{ form.name(class_="input") }}</div>
+        </div>
+
+        {{ render_field(form.description, field_type="textarea") }}
+
+        <div class="field">
+          {{ form.quantity.label(class_="label") }}
+          <div class="control">{{ form.quantity(class_="input") }}</div>
+        </div>
+
+        {{ render_field_addons_left(form.price, addon_text="R$") }}
+
+        <div class="field is-grouped">
+          <div class="control">
+            <button class="button is-link">Add</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </section>
+{% endblock content %}

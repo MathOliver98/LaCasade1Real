@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% from '_utils.html' import render_icon_link %}
+
+{% block content %}
+  <section class="section">
+    <div class="container">
+      <div class="columns">
+
+        <div class="column is-one-fifth">
+          <aside class="menu">
+
+            <div class="menu-section box">
+              <p class="menu-label">Products</p>
+              <ul class="menu-list">
+                <li>{{ render_icon_link("fa-plus", "Add Product", target=url_for('add_product')) }}</li>
+                <li>
+                  {{ render_icon_link("fa-cart-shopping", "My Products", target=url_for('products', username=current_user.username)) }}
+                </li>
+ 
+              </ul>
+            </div>
+ 
+            <div class="menu-section box">
+              <p class="menu-label">Settings</p>
+              <ul class="menu-list">
+                <li>{{ render_icon_link("fa-circle-info", "Profile Settings", target=url_for('account')) }}</li>
+                <li>{{ render_icon_link("fa-user", "Change Username", target=url_for('change_username')) }}</li>
+                <li>{{ render_icon_link("fa-envelope", "Change Email", target=url_for('change_email')) }}</li>
+                <li>{{ render_icon_link("fa-lock", "Change Password", target=url_for('change_password')) }}</li>
+                <li>
+                  <a data-target="modal-delete-account"
+                     class="modal-trigger button is-danger has-text-left"
+                     data-next="{{ url_for('index') }}">
+                    <span class="icon is-small"><i class="fa fa-close"></i></span>
+                    <span class="ml-1">Delete Account</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+          </aside>
+        </div>
+
+        <div class="column">
+          <div class="box">
+            {% block page_content %}
+
+            {% endblock page_content %}
+          </div>
+        </div>
+ 
+      </div>
+    </div>
+  </section>
+ 
+  <!-- Modals -->
+  <form id="modal-delete-account"
+        class="modal"
+        action="{{ url_for('delete_account') }}"
+        method="post">
+    <div class="modal-background"></div>
+    <div class="modal-card">
+      <header class="modal-card-head">
+        <p class="modal-card-title">Warning!</p>
+        <button class="delete" aria-label="close"></button>
+      </header>
+      <section class="modal-card-body">
+        <p>
+          Are you sure you want to delete your account? This action is <strong>permanent.</strong>
+        </p>
+      </section>
+      <footer class="modal-card-foot">
+        <button type="submit" class="button is-primary">Delete</button>
+        <button type="button" class="button close-modal">Cancel</button>
+      </footer>
+    </div>
+  </form>
+{% endblock content %}

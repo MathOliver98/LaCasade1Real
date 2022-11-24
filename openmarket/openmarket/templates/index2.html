@@ -1,0 +1,311 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <div id="app">
+
+    <div class="container has-text-centered">
+      <h1 class="title p-6">Welcome to OpenMarket</h1>
+    </div>
+ 
+    <div class="container mt-3">
+ 
+      <div class="columns">
+ 
+        <div class="column is-3">
+          <aside class="menu">
+            <div class="mb-2">
+              <i class="fas fa-lg fa-filter"></i>
+              <span class="subtitle">Filters</span>
+            </div>
+
+            <div class="menu-section box">
+              <p class="menu-label">Seller</p>
+              <ul class="menu-list">
+                <li>
+                  <form action="{{ url_for('index') }}" method="post">
+                    <div class="field is-flex is-align-items-center">
+                      <div class="control has-icons-left mr-1">
+                        <input type="text"
+                               class="input"
+                               placeholder="Username.."
+                               name="username"
+                               id="username">
+                        <span class="icon is-left">
+                          <i class="fas fa-user"></i>
+                        </span>
+                      </div>
+                      <div class="control ml-1">
+                        <button type="submit" class="button is-primary">
+                          <span class="icon">
+                            <i class="fa fa-arrow-right"></i>
+                          </span>
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </li>
+              </ul>
+            </div>
+
+            <!-- <div class="menu-section box">
+              <p class="menu-label">Price</p>
+              <ul class="menu-list is-flex is-align-items-center">
+                <div class="control pr-1">
+                  <input type="text" class="input" placeholder="Min">
+                </div>
+                <p>—</p>
+                <div class="control pl-1">
+                  <input type="text" class="input" placeholder="Max">
+                </div>
+              </ul>
+            </div> -->
+
+          </aside>
+        </div>
+ 
+        <div class="column is-9 pt-6">
+          <div id="filter"
+               class="is-flex is-align-items-center is-justify-content-center box">
+ 
+            <!-- <div id="filterOrder" class="mx-4">
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label">Order:</label>
+                </div>
+                <div class="field-body">
+                  <div class="field is-narrow">
+                    <div class="control">
+                      <div class="select">
+                        <select>
+                          <option>
+                            Price Descending
+                          </option>
+                          <option>
+                            Price Ascending
+                          </option>
+                          <option>
+                            Most Recent
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+ 
+            <!-- <div id="filterShow">
+              <div class="field is-horizontal">
+                <div class="field-label is-normal">
+                  <label class="label">Show:</label>
+                </div>
+                <div class="field-body">
+                  <div class="field is-narrow">
+                    <div class="control">
+                      <div class="select">
+                        <select>
+                          <option>
+                            20 per page
+                          </option>
+                          <option>
+                            40 per page
+                          </option>
+                          <option>
+                            60 per page
+                          </option>
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div> -->
+ 
+            <div id="totalProducts" class="mx-4">
+              <p class="subtitle">
+                <strong>{{ products | length }}</strong> <small>products</small>
+              </p>
+            </div>
+          </div>
+ 
+          <hr>
+ 
+          <div class="columns is-multiline">
+            {% if not products %}
+              <div class="column is-full has-text-centered">
+                <p class="subtitle">Not found!</p>
+              </div>
+            {% else %}
+              {% for product in products %}
+                <div class="column is-one-third is-clickable modal-trigger"
+                     data-target="modal-product-info"
+                     data-id="{{ product.id }}">
+
+                  <div class="product box is-flex-direction-column p-3">
+
+                    <div class="is-flex is-justify-content-space-between is-align-items-center">
+
+                      <div>
+                        <i class="fas fa-clock fa-lg"></i>
+                        <span>{{ format_date(product.created) }}</span>
+                      </div>
+
+                      <div>
+                        <a href="{{ url_for('profile', id=product.seller_id) }}">
+                          <span class="icon" title="{{ product.seller.username }}">
+                            <i class="fas fa-user"></i>
+                          </span>
+                        </a>
+                      </div>
+
+                      <div>
+                        <div>
+
+                          <span class="icon mr-2">
+                            <i class="fas fa-lg fa-heart-circle-minus"></i>
+                          </span>
+
+                          <span class="is-size-5">{{ product.favorites | length }}</span>
+
+                          <span class="icon ml-2">
+                            <i class="fas fa-lg fa-heart-circle-plus"></i>
+                          </span>
+
+                        </div>
+                      </div>
+
+                    </div>
+
+                    <!-- <a class="p-2"> -->
+                    <figure class="image p-2"
+                            style="width: 100%;
+                                   max-height: 200px;
+                                   margin: auto;">
+                      <img src="https://via.placeholder.com/600x400" alt="Placeholder">
+                    </figure>
+                    <!-- </a> -->
+
+                    <div class="product-content">
+                      <p class="subtitle" title="{{ product.name }} ">{{ product.name }}</p>
+                    </div>
+                    <!-- <input type="checkbox" class="expand-btn" onclick="toggleExpand"> -->
+
+                    <div class="product-info pt-2">
+                      <div class="is-flex is-justify-content-space-between">
+                        <p class="has-text-primary-dark is-size-5">
+                          <small>R$</small>{{ format_price(product.price) }}
+                        </p>
+
+                        {% if not current_user.is_authenticated or not current_user == product.seller %}
+                          <a href="https://api.whatsapp.com/send?phone=55{{ product.seller.phone }}">
+                            <span class="icon has-text-primary-dark">
+                              <i class="fab fa-lg fa-whatsapp pt-2"></i>
+                            </span>
+                          </a>
+                        {% endif %}
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              {% endfor %}
+            {% endif %}
+          </div>
+        </div>
+ 
+ 
+        {% for product in products %}
+          <!-- List version -->
+          <!-- <div class="column is-full">
+                <div class="product box is-flex p-2">
+ 
+                  <a>
+                    <figure class="image" style="width: 15rem;">
+                      <img src="https://via.placeholder.com/800x600" alt="Placeholder">
+                    </figure>
+                  </a>
+ 
+                  <div class="is-flex is-flex-direction-column" style="width: 100%;">
+ 
+                    <div id="product-content" class="px-3 py-2" style="border-bottom: 1px solid lightgray;">
+                      <div class="is-flex">
+                        <p>
+                          <small class="has-text-grey">Sold by&nbsp;</small><a>{{ product.seller.username }}</a>
+                        </p>
+ 
+                        <div style="margin-left: auto; order: 2;" class="is-flex">
+                          <span class="icon mr-1">
+                            <i class="fas fa-clock fa-lg"></i>
+                          </span>
+                          <span>{{ format_date(product.created) }}</span>
+                        </div>
+                      </div>
+ 
+                      <p class="is-size-4">{{ product.name }}</p>
+ 
+                      <p class="is-size-4 has-text-primary-dark">
+                        <small>R$</small>{{ format_price(product.price) }}
+                      </p>
+                    </div>
+ 
+                    <div id="product-info" class="is-flex px-3 py-2" style="height: 100%;">
+ 
+                      <div class="is-flex is-align-items-center is-justify-content-center">
+                        <div>
+ 
+                          <span class="icon mr-2">
+                            <i class="fas fa-lg fa-heart-circle-minus"></i>
+                          </span>
+ 
+                          <span class="is-size-5">{{ product.favorites | length }}</span>
+ 
+                          <span class="icon ml-2">
+                            <i class="fas fa-lg fa-heart-circle-plus"></i>
+                          </span>
+ 
+                        </div>
+                      </div>
+ 
+                      <div style="margin-left: auto; order: 2;" class="is-flex is-align-items-center">
+ 
+                        <span class="icon has-text-primary-dark is-clickable">
+                          <i class="fab fa-lg fa-whatsapp"></i>
+                        </span>
+ 
+                        <p>Hey2</p>
+ 
+                      </div>
+ 
+                    </div>
+ 
+                  </div>
+ 
+                </div>
+              </div> -->
+        {% endfor %}
+ 
+      </div>
+    </div>
+ 
+  </div>
+</div>
+
+</div>
+
+<!-- Modals -->
+<div class="modal" id="modal-product-info">
+  <div class="modal-background"></div>
+  <div class="modal-card">
+    <section class="modal-card-body">
+      <p class="subtitle" id="product-name"></p>
+      <hr>
+      <p id="product-description"></p>
+    </section>
+  </div>
+  <button class="close-modal" aria-label="close"></button>
+</div>
+{% endblock content %}
+
+{% block script %}
+  <script></script>
+{% endblock script %}

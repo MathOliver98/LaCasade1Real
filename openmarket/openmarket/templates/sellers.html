@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <section class="section">
+    <div class="container">
+      <div class="is-flex is-justify-content-center">
+        <table class="table is-striped">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Username</th>
+              <th>Phone Number</th>
+              <th>Total Products</th>
+              <th>Joined</th>
+              <th>Gender</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for seller in sellers %}
+              <tr>
+                <td>{{ seller.display_name }}</td>
+                <td>{{ seller.username }}</td>
+                <td>{{ seller.phone }}</td>
+                <td>{{ seller.products | length }}</td>
+                <td>{{ format_date(seller.created) }}</td>
+                <td>{{ seller.gender }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+{% endblock content %}
